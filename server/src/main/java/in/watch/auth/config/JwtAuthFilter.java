@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -39,6 +40,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         //username is generally used when talking about security. So username refer userEmail
         String userEmail = jwtService.extractUsername(jwtToken);
+
+        //checking if email is not null and user is already authenticated
+        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+        }
 
     }
 }
