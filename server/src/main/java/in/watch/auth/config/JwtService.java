@@ -18,8 +18,8 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${secret.Key}")
-    private static String SECRET_KEY;
+
+    private final static String SECRET_KEY = "OPBgeYn8Dx8pfcKbak0IHZvxRJGBn0mulkfafhsiklghisfjopsfjopjpsfjskfj";
 
     public String extractUsername(String token) {
 
@@ -41,12 +41,14 @@ public class JwtService {
 
     //this method returns Key that is used to sign jwt token
     private Key getSignInKey() {
+
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
     //to generate token
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+
         return Jwts.builder().setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())// for spring its username but here its email
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -56,7 +58,7 @@ public class JwtService {
 
     //to generate without extraClaims
     public String generateToken(UserDetails userDetails) {
-        return this.generateToken(new HashMap(), userDetails);
+        return this.generateToken(new HashMap<>(), userDetails);
     }
 
     //to validate a token
