@@ -39,7 +39,7 @@ public class User implements UserDetails {
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
-    //this should return username or email (unique thing for user)
+    //this should return username or email (unique thing for user) and it will be referred as username in spring security
     @Override
     public String getUsername() {
         return this.email;
