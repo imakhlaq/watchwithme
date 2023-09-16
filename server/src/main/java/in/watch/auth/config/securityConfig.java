@@ -25,11 +25,10 @@ public class securityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**")//these are whitelist paths
+                        .requestMatchers("/**")//these are whitelist paths
                         .permitAll().anyRequest().
                         authenticated())//and rest are private need auth
                 .sessionManagement(session -> session
@@ -37,7 +36,6 @@ public class securityConfig {
 
                 ).authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);//run this before auth filter
-
 
         return http.build();
     }
