@@ -22,9 +22,9 @@ public class JwtService {
     private final static String SECRET_KEY = "OPBgeYn8Dx8pfcKbak0IHZvxRJGBn0mulkfafhsiklghisfjopsfjopjpsfjskfj";
 
     public String extractUsername(String token) {
-
         return extractClaim(token, Claims::getSubject);//subject is username
     }
+    
 
     //extracting one claim
     private <T> T extractClaim(String token, Function<Claims, T> claimResolver) {

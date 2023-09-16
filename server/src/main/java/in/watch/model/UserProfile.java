@@ -2,16 +2,15 @@ package in.watch.model;
 
 import in.watch.auth.model.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "user_profile")
-@Data
+@ToString
+@Setter
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

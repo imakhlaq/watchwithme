@@ -12,7 +12,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-@Data
+@ToString
+@Setter
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,6 +37,8 @@ public class User implements UserDetails {
     private Role role;
 
 
+    @ToString.Exclude
+    //related to roomgen
     @OneToOne(cascade = CascadeType.ALL)
     //"profile_id"=>it will be colum name, and it will reference profile id
     @JoinColumn(name = "profile_id", referencedColumnName = "id")

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class AuthService implements IAuthService {
@@ -40,10 +41,10 @@ public class AuthService implements IAuthService {
                 .password(passwordEncoder.encode(userDTO.getPassword()))
                 .role(Role.USER).build();
 
-        repo.save(user);
+        var dbUser = repo.save(user);
 
         // user ==>UserDetails
-        String token = jwtService.generateToken(new HashMap<>(), user);
+        String token = jwtService.generateToken(Map.of("userId", dbUser.getId(), "test", false), user);
 
         return AuthResponse.builder()
                 .message("Success")
@@ -63,11 +64,10 @@ public class AuthService implements IAuthService {
         );
 
         //here means username and pass is correct
-        var user = repo.findAllByEmailIs(userDTO.getEmail()).orElseThrow(() -> new UsernameNotFoundException("User not found"));//throw and handle exception
-        System.out.println(user);
+        var dbUser = repo.findAllByEmailIs(userDTO.getEmail()).orElseThrow(() -> new UsernameNotFoundException("User not found"));//throw and handle exception
 
         // user ==>UserDetails
-        String token = jwtService.generateToken(new HashMap<>(), user);
+        String token = jwtService.generateToken(Map.of("userId", dbUser.getId(), "test", false), dbUser);
 
         return AuthResponse.builder()
                 .message("Success")

@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 public class RoomGenRes {
     private HttpStatusCode statusCode;
+    private String ownerId;
     private String roomId;
     private LocalDateTime timestamp;
 
