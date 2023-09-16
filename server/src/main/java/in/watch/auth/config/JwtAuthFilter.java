@@ -20,8 +20,6 @@ import java.io.IOException;
 //There are multiple ways to filer=>you can implement Filter interface
 //here we are filtering using it for every request
 @Component
-@RequiredArgsConstructor
-//Because of all args constructor any final field declared in the class will be required in constructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Autowired

@@ -1,4 +1,4 @@
-package in.watch.rooms.controller;
+package in.watch.rooms;
 
 
 import in.watch.rooms.dto.Message;
@@ -13,21 +13,24 @@ public class RoomController {
 
     @MessageMapping("/message")//client will send message on this =>/app/message
     @SendTo("/topic/return-to")
-//any client subscribed to this url will receive the data return by this method.__(/topic is used to broadcast its in config)
+    //any client subscribed to this url will receive the data return by this method.__(/topic is used to broadcast its in config)
     public Message getContent(@Payload Message message) {
 
+        return new Message();
     }
+
 
 
 
 
 /*
+
 //if you want to add data in socket session
     @MessageMapping("/adduser")
     @SendTo("/topic/adduser")
-
     public Message getContent(@Payload Message message, SimpMessageHeaderAccessor accessor) {
         accessor.getSessionAttributes().put("user","set user from payload");
+        //to set user to the socket connection
 
-    }
-}*/
+    }*/
+}

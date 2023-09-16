@@ -28,7 +28,8 @@ public class securityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**")//these are whitelist paths
+                        .requestMatchers("/api/auth/**", "/ws/**", "/topic/**", "/app/**")
+                        //these are whitelist paths
                         .permitAll().anyRequest().
                         authenticated())//and rest are private need auth
                 .sessionManagement(session -> session

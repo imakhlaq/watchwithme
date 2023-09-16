@@ -1,7 +1,9 @@
 package in.watch.auth.model;
 
+import in.watch.model.UserProfile;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,6 +33,12 @@ public class User implements UserDetails {
     //telling that you want to use enum with string value
     @Enumerated(EnumType.STRING)
     private Role role;
+
+
+    @OneToOne(cascade = CascadeType.ALL)
+    //"profile_id"=>it will be colum name, and it will reference profile id
+    @JoinColumn(name = "profile_id", referencedColumnName = "id")
+    private UserProfile profile;
 
 
     //this should return a list of roles
