@@ -46,21 +46,18 @@ public class RoomController {
         // Create an InputStreamSource from the InputStream
         InputStreamSource source = new InputStreamResource(videoInputStream);
 
-        StreamingResponseBody responseBody = new StreamingResponseBody() {
-
-            @Override
-            public void writeTo(OutputStream outputStream) throws IOException {
-                log.warn("inside writeTo");
-                InputStream is = source.getInputStream();
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = is.read(buffer)) != -1) {
-                    log.warn("Read byte {}", bytesRead);
-                    outputStream.write(buffer, 0, bytesRead);
-                }
+        return outputStream -> {
+            log.warn("inside writeTo");
+            InputStream is = source.getInputStream();
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = is.read(buffer)) != -1) {
+                log.warn("Read byte {}", bytesRead);
+                outputStream.write(buffer, 0, bytesRead);
             }
+            is.close();
+            outputStream.flush();
         };
-        return responseBody;
 
     }
 

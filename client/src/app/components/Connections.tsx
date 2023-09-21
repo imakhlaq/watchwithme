@@ -2,9 +2,12 @@
 
 import SockJS from "sockjs-client";
 import { Client, over } from "stompjs";
+import { useRef } from "react";
 
 type Props = {};
 export default function Connections({}: Props) {
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
   function onError(e: any) {
     console.log("error call");
     console.log(e);
@@ -23,23 +26,20 @@ export default function Connections({}: Props) {
       (frame) => {
         console.log(frame);
 
-        stompClient.subscribe("/topic/data", (message) => {
+        stompClient.subscribe("/topic/data", (body) => {
           console.log("MessageCall");
-          console.log(message);
+          console.log(body);
+          if (videoRef !== null)
+            videoRef.current!.src = "data:video/mp4;base64," + body;
         });
         //here subscribe
 
-        stompClient.send("/app/message", {}, JSON.stringify({}));
+        stompClient.send("/app/message");
       },
       (error) => console.log(error),
     );
 
     //send data to server
-  }
-
-  function sendMessage(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
-    e.preventDefault();
-    console.log("sending message");
   }
 
   return (
@@ -50,12 +50,11 @@ export default function Connections({}: Props) {
       >
         enter room
       </button>
-      <button
-        className="bg-slate-600 px-6 py-3 max-w-lg mx-auto"
-        onClick={sendMessage}
-      >
-        send message
-      </button>
+      <video
+        className="bg-white h-[20rem] w-[32rem]"
+        ref={videoRef}
+        controls
+      ></video>
     </div>
   );
 }
