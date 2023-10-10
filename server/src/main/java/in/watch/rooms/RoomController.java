@@ -2,6 +2,7 @@ package in.watch.rooms;
 
 
 import in.watch.rooms.service.RoomService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -33,9 +34,7 @@ public class RoomController {
     private SimpMessagingTemplate messagingTemplate;
 
     @MessageMapping("/message")
-    @SendTo("/topic/data")
-    public StreamingResponseBody getContent() throws IOException {
-
+    public void getContent(HttpServletResponse response) throws IOException {
 
         // Replace with the path to your video file
         Path videoPath = Paths.get("F:\\earth.mp4");
@@ -46,7 +45,8 @@ public class RoomController {
         // Create an InputStreamSource from the InputStream
         InputStreamSource source = new InputStreamResource(videoInputStream);
 
-        return outputStream -> {
+
+        StreamingResponseBody responseBody = outputStream -> {
             log.warn("inside writeTo");
             InputStream is = source.getInputStream();
             byte[] buffer = new byte[1024];
@@ -57,7 +57,9 @@ public class RoomController {
             }
             is.close();
             outputStream.flush();
+
         };
+        messagingTemplate.convertAndSend("/topic/data", responseBody);
 
     }
 
