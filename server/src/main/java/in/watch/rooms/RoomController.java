@@ -2,7 +2,6 @@ package in.watch.rooms;
 
 
 import in.watch.rooms.service.RoomService;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -13,15 +12,15 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Base64;
 
 @Controller
 @Slf4j
@@ -34,48 +33,47 @@ public class RoomController {
     private SimpMessagingTemplate messagingTemplate;
 
     @MessageMapping("/message")
-    public void getContent(HttpServletResponse response) throws IOException {
+    public void getContent() throws IOException {
 
-        // Replace with the path to your video file
-        Path videoPath = Paths.get("F:\\earth.mp4");
+        //getting file from Disk
+        Path videoPath = Paths.get("F:\\testFile.mp4");
 
-        // Open the video file as an InputStream
+        //open stream from the file
         InputStream videoInputStream = Files.newInputStream(videoPath, StandardOpenOption.READ);
 
-        // Create an InputStreamSource from the InputStream
-        InputStreamSource source = new InputStreamResource(videoInputStream);
+  /*      // Create an InputStreamSource from the InputStream
+        InputStreamSource source = new InputStreamResource(videoInputStream);*/
 
 
-        StreamingResponseBody responseBody = outputStream -> {
-            log.warn("inside writeTo");
-            InputStream is = source.getInputStream();
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = is.read(buffer)) != -1) {
-                log.warn("Read byte {}", bytesRead);
-                outputStream.write(buffer, 0, bytesRead);
-            }
-            is.close();
-            outputStream.flush();
+        // InputStream is = source.getInputStream();
 
-        };
-        messagingTemplate.convertAndSend("/topic/data", responseBody);
+        //buffer array
+        byte[] buffer = new byte[1024];
+        int bytesRead;
 
+        //sending video in buffer to FE
+        while ((bytesRead = videoInputStream.read(buffer)) != -1) {
+
+            var base64 = Base64.getEncoder().encodeToString(buffer);
+
+            //test Code
+            PrintWriter writer = new PrintWriter(new FileOutputStream("F:\\testFile.txt", true));
+            writer.print(base64);
+            writer.flush();
+            writer.close();
+
+            messagingTemplate.convertAndSend("/topic/data", base64);
+        }
+        videoInputStream.close();
+        // is.close();
     }
-
-
 }
 
 
 
 
-
 /*
-
-
-
-
-//if you want to add data in socket session
+   if you want to add data in socket session
     @MessageMapping("/adduser")  //client will send message on this =>/app/message
     @SendTo("/topic/adduser")
     //any client subscribed to this url will receive the data return by this method.__(/topic is used to broadcast its in config)
@@ -83,4 +81,5 @@ public class RoomController {
         accessor.getSessionAttributes().put("user","set user from payload");
         //to set user to the socket connection
 
-    }*/
+    }
+*/

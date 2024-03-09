@@ -27,10 +27,8 @@ export default function Connections({}: Props) {
         console.log(frame);
 
         stompClient.subscribe("/topic/data", (body) => {
-          console.log("MessageCall");
-          console.log(body);
           if (videoRef !== null)
-            videoRef.current!.src = "data:video/mp4;base64," + body;
+            videoRef.current!.src = `data:video/mp4;base64,${body}`;
         });
         //here subscribe
 
